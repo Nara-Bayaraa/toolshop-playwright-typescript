@@ -1,0 +1,1 @@
+export const AUTH_FILE = 'playwright/.auth/user.json'; // the one place the path lives
