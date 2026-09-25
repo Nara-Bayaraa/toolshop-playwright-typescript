@@ -2,12 +2,12 @@ import { Page, Locator } from '@playwright/test';
 
 export class LoginPage {
   readonly url = '/auth/login';
-  readonly usernameInput: Locator;
+  readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
 
   constructor(private readonly page: Page) {
-    this.usernameInput = page.getByTestId('email');
+    this.emailInput = page.getByTestId('email');
     this.passwordInput = page.getByTestId('password');
     this.loginButton = page.getByRole('button', { name: 'Login' });
 
@@ -18,7 +18,7 @@ export class LoginPage {
   }
 
   async login(email: string, password: string): Promise<void> {
-    await this.usernameInput.fill(email);
+    await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
 
