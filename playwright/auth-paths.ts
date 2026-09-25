@@ -1,1 +1,2 @@
-export const AUTH_FILE = 'playwright/.auth/user.json'; // the one place the path lives
+export const USER_FILE = 'playwright/.auth/user.json'; // USER_FILE holds the path to the customer session
+export const ADMIN_FILE = 'playwright/.auth/admin.json'; // ADMIN_FILE holds the path to the admin session

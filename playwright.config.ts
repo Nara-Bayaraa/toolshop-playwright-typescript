@@ -1,6 +1,7 @@
 /// <reference types="node" />
 import { defineConfig, devices } from '@playwright/test';
-import { AUTH_FILE } from './playwright/auth-paths';
+import { USER_FILE } from './playwright/auth-paths'; // USER_FILE holds the path to the customer session
+
 
 /**
  * Read environment variables from file.
@@ -55,11 +56,11 @@ export default defineConfig({
   {
     name: 'ui',
     testDir: './tests/ui',
-    dependencies: ['setup'],             //log in once via setup project so ui tests skip the login screen  
+    dependencies: ['setup'], //log in once via setup project so ui tests skip the login screen  
     use: {
       ...devices['Desktop Chrome'],
       baseURL: 'https://practicesoftwaretesting.com',
-      storageState: AUTH_FILE, // use the storageState from the setup project
+      storageState: USER_FILE, // ui project starts logged in as customer
     },
   },
     // {
