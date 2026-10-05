@@ -1,20 +1,22 @@
 {
  "name": "toolshop-playwright-typescript",
-"description": "UI and API test automation for the Toolshop demo app, built with Playwright and TypeScript",
-  "main": "index.js",
-  "scripts": {
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "test:debug": "playwright test --debug",
-    "report": "playwright show-report"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "type": "commonjs",
-  "devDependencies": {
-    "@playwright/test": "^1.62.1",
-    "@types/node": "^26.4.0",
-    "typescript": "^7.0.2"
-  }
+ "description": "UI and API test automation for the Toolshop demo app, built with Playwright and TypeScript",
+ "main": "index.js",
+ "scripts": {
+  "test": "playwright test",
+  "test:ui": "playwright test --ui",
+  "test:debug": "playwright test --debug",
+  "report": "playwright show-report"
+ },
+ "keywords": [],
+ "author": "",
+ "license": "MIT",
+ "type": "commonjs",
+ "devDependencies": {
+  "@playwright/test": "^1.62.1",
+  "@types/node": "^26.4.0",
+  "dotenv": "^17.4.2",
+  "prettier": "^3.9.6",
+  "typescript": "^7.0.2"
+ }
 }
