@@ -19,6 +19,17 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
+      env:
+        USER_EMAIL: ${{ secrets.USER_EMAIL }}
+        # customer2 login email, read from GitHub Secrets
+        USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+        # customer2 password
+        ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+        # admin login email
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        # admin password
+        FAILED_LOGIN_EMAIL: ${{ secrets.FAILED_LOGIN_EMAIL }}
+        # unregistered email used by the wrong-email test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
