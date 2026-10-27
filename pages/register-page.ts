@@ -1,4 +1,19 @@
-import { Page, Locator } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
+
+export type RegisterUser = {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  country: string;
+  postalCode: string;
+  houseNumber: string;
+  street: string;
+  city: string;
+  state: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+};
 
 export class RegisterPage {
   readonly url = '/auth/register';
@@ -15,6 +30,7 @@ export class RegisterPage {
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly registerButton: Locator;
+  readonly emailExistsError: Locator;
 
   constructor(private readonly page: Page) {
     this.firstNameInput = page.getByTestId('first-name');
@@ -30,8 +46,35 @@ export class RegisterPage {
     this.emailInput = page.getByTestId('email');
     this.passwordInput = page.getByTestId('password');
     this.registerButton = page.getByTestId('register-submit');
+    this.emailExistsError = page.getByText('A customer with this email address already exists.');
   }
 
+  async goto(): Promise<void> {
+    await this.page.goto(this.url);
+  }
 
-  
+  async fillForm(user: RegisterUser): Promise<void> {
+    await this.firstNameInput.fill(user.firstName);
+    await this.lastNameInput.fill(user.lastName);
+    await this.dateOfBirthInput.fill(user.dateOfBirth);
+    await this.countryInput.selectOption(user.country);
+
+    await this.postalCodeInput.fill(user.postalCode);
+    await this.houseNumberInput.fill(user.houseNumber);
+    await this.streetInput.fill(user.street);
+    await this.cityInput.fill(user.city);
+    await this.stateInput.fill(user.state);
+    await this.phoneNumberInput.fill(user.phoneNumber);
+    await this.emailInput.fill(user.email);
+    await this.passwordInput.fill(user.password);
+  }
+
+  async submit(): Promise<void> {
+    await this.registerButton.click();
+  }
+
+  async register(user: RegisterUser): Promise<void> {
+    await this.fillForm(user);
+    await this.submit();
+  }
 }
