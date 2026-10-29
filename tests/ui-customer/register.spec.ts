@@ -28,4 +28,13 @@ test.describe('Register', () => {
     await expect(registerPage.emailExistsError).toBeVisible();
     await expect(page).toHaveURL(/auth\/register/);
   });
+
+
+  test('breached password shows an error', async ({ page }) => {
+    const user = { ...makeUser(), password: 'Password123!' };
+    await registerPage.register(user);
+
+    await expect(registerPage.passwordLeakError).toBeVisible();
+    await expect(page).toHaveURL(/auth\/register/);
+  })
 });
