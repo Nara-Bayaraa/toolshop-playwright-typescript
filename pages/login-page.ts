@@ -8,6 +8,7 @@ export class LoginPage {
   readonly loginError: Locator;
   readonly emailError: Locator;
   readonly passwordError: Locator;
+  readonly registerButton: Locator;
 
   constructor(private readonly page: Page) {
     this.emailInput = page.getByTestId('email');
@@ -16,6 +17,7 @@ export class LoginPage {
     this.loginError = page.getByTestId('login-error');
     this.emailError = page.getByTestId('email-error');
     this.passwordError = page.getByTestId('password-error');
+    this.registerButton = page.getByTestId('register-link');
   }
 
   async goto(): Promise<void> {
@@ -26,7 +28,9 @@ export class LoginPage {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
+  }
 
+  async goToRegister(): Promise<void> {
+    await this.registerButton.click();
   }
 }
-

@@ -12,16 +12,15 @@ test.describe('Login', () => {
     await loginPage.goto();
   });
 
-// positive test cases for login
+  // positive test cases for login
   test('valid user lands on account page', async ({ page }) => {
     await loginPage.login(process.env.USER_EMAIL!, process.env.USER_PASSWORD!);
     await expect(page).toHaveURL(/account/);
   });
 
-
-// negative test cases for login
+  // negative test cases for login
   test('wrong password shows an error', async ({ page }) => {
-   await loginPage.login(process.env.USER_EMAIL!, 'wrongpass');
+    await loginPage.login(process.env.USER_EMAIL!, 'wrongpass');
     await expect(loginPage.loginError).toBeVisible();
     await expect(page).toHaveURL(/auth\/login/);
   });
