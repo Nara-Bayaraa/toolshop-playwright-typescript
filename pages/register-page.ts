@@ -48,7 +48,7 @@ export class RegisterPage {
     this.passwordInput = page.getByTestId('password');
     this.registerButton = page.getByTestId('register-submit');
     this.emailExistsError = page.getByText('A customer with this email address already exists.');
-    this.passwordLeakError = page.getByTestId('register-error');
+    this.passwordLeakError = page.getByText('The given password has appeared in a data leak. Please choose a different password.');
   }
 
   async goto(): Promise<void> {
