@@ -32,6 +32,8 @@ export class RegisterPage {
   readonly registerButton: Locator;
   readonly emailExistsError: Locator;
   readonly passwordLeakError: Locator;
+  readonly firstNameRequiredError: Locator;
+  readonly passwordRequiredError: Locator;
 
   constructor(private readonly page: Page) {
     this.firstNameInput = page.getByTestId('first-name');
@@ -49,6 +51,8 @@ export class RegisterPage {
     this.registerButton = page.getByTestId('register-submit');
     this.emailExistsError = page.getByText('A customer with this email address already exists.');
     this.passwordLeakError = page.getByText('The given password has appeared in a data leak. Please choose a different password.');
+  this.firstNameRequiredError = page.getByText('First name is required')
+  this.passwordRequiredError = page.getByText('Password is required')
   }
 
   async goto(): Promise<void> {
@@ -60,7 +64,6 @@ export class RegisterPage {
     await this.lastNameInput.fill(user.lastName);
     await this.dateOfBirthInput.fill(user.dateOfBirth);
     await this.countryInput.selectOption(user.country);
-
     await this.postalCodeInput.fill(user.postalCode);
     await this.houseNumberInput.fill(user.houseNumber);
     await this.streetInput.fill(user.street);

@@ -11,7 +11,7 @@ test.describe('Register', () => {
     await registerPage.goto();
   });
 
-// positive test cases for register
+  // positive test cases for register
   test('customer can register a new account', async ({ page }) => {
     const user = makeUser();
     // user = a fresh RegisterUser object, new faker name and unique email every run
@@ -20,7 +20,7 @@ test.describe('Register', () => {
     await expect(page).toHaveURL(/auth\/login/);
   });
 
-// negative test cases for register
+  // negative test cases for register
   test('duplicate email shows an error', async ({ page }) => {
     const user = { ...makeUser(), email: process.env.USER_EMAIL! };
     await registerPage.register(user);
@@ -29,12 +29,19 @@ test.describe('Register', () => {
     await expect(page).toHaveURL(/auth\/register/);
   });
 
-
   test('breached password shows an error', async ({ page }) => {
     const user = { ...makeUser(), password: 'Password123!' };
     await registerPage.register(user);
 
     await expect(registerPage.passwordLeakError).toBeVisible();
     await expect(page).toHaveURL(/auth\/register/);
-  })
+  });
+
+  test('empty form shows all required errors', async ({ page }) => {
+    await registerPage.submit();
+
+    await expect(registerPage.firstNameRequiredError).toBeVisible();
+    await expect(registerPage.passwordRequiredError).toBeVisible();
+    await expect(page).toHaveURL(/auth\/register/);
+  });
 });
