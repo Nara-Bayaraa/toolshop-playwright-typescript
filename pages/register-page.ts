@@ -1,5 +1,6 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 
+/** Data needed to fill the register form. Built by makeUser() in test-data/user.ts. */
 export type RegisterUser = {
   firstName: string;
   lastName: string;
@@ -15,26 +16,29 @@ export type RegisterUser = {
   password: string;
 };
 
+/** The register page (/auth/register). Holds the locators, actions, and checks for the register form. */
 export class RegisterPage {
-  readonly url = '/auth/register';
-  readonly firstNameInput: Locator;
-  readonly lastNameInput: Locator;
-  readonly dateOfBirthInput: Locator;
-  readonly countryInput: Locator;
-  readonly postalCodeInput: Locator;
-  readonly houseNumberInput: Locator;
-  readonly streetInput: Locator;
-  readonly cityInput: Locator;
-  readonly stateInput: Locator;
-  readonly phoneNumberInput: Locator;
-  readonly emailInput: Locator;
-  readonly passwordInput: Locator;
-  readonly registerButton: Locator;
-  readonly emailExistsError: Locator;
-  readonly passwordLeakError: Locator;
-  readonly firstNameRequiredError: Locator;
-  readonly passwordRequiredError: Locator;
+  /** Page address, added to baseURL. static, so you can read it without creating a RegisterPage. */
+  static readonly url = '/auth/register';
 
+  private readonly firstNameInput: Locator;
+  private readonly lastNameInput: Locator;
+  private readonly dateOfBirthInput: Locator;
+  private readonly countryInput: Locator;
+  private readonly postalCodeInput: Locator;
+  private readonly houseNumberInput: Locator;
+  private readonly streetInput: Locator;
+  private readonly cityInput: Locator;
+  private readonly stateInput: Locator;
+  private readonly phoneNumberInput: Locator;
+  private readonly emailInput: Locator;
+  private readonly passwordInput: Locator;
+  private readonly registerButton: Locator;
+  private readonly registerError: Locator;
+  private readonly firstNameError: Locator;
+  private readonly passwordError: Locator;
+
+  /** Sets up the locators. Playwright looks for the element only when a method uses it, not here. */
   constructor(private readonly page: Page) {
     this.firstNameInput = page.getByTestId('first-name');
     this.lastNameInput = page.getByTestId('last-name');
@@ -49,16 +53,17 @@ export class RegisterPage {
     this.emailInput = page.getByTestId('email');
     this.passwordInput = page.getByTestId('password');
     this.registerButton = page.getByTestId('register-submit');
-    this.emailExistsError = page.getByText('A customer with this email address already exists.');
-    this.passwordLeakError = page.getByText('The given password has appeared in a data leak. Please choose a different password.');
-  this.firstNameRequiredError = page.getByText('First name is required')
-  this.passwordRequiredError = page.getByText('Password is required')
+    this.registerError = page.getByTestId('register-error');
+    this.firstNameError = page.getByTestId('first-name-error');
+    this.passwordError = page.getByTestId('password-error');
   }
 
+  /** Opens the register page. The full address comes from baseURL in playwright.config.ts. */
   async goto(): Promise<void> {
-    await this.page.goto(this.url);
+    await this.page.goto(RegisterPage.url);
   }
 
+  /** Fills every field of the form from one RegisterUser. Does not submit. */
   async fillForm(user: RegisterUser): Promise<void> {
     await this.firstNameInput.fill(user.firstName);
     await this.lastNameInput.fill(user.lastName);
@@ -74,12 +79,31 @@ export class RegisterPage {
     await this.passwordInput.fill(user.password);
   }
 
+  /** Clicks the Register button. Does not check the result, the test decides. */
   async submit(): Promise<void> {
     await this.registerButton.click();
   }
 
+  /** Fills the form and submits it. Does not check the result, the test decides. */
   async register(user: RegisterUser): Promise<void> {
     await this.fillForm(user);
     await this.submit();
+  }
+
+  /** Checks we are still on the register page and the Register button is visible. Use it after a failed register. */
+  async expectOnRegisterPage(): Promise<void> {
+    await expect(this.page).toHaveURL(/auth\/register/);
+    await expect(this.registerButton).toBeVisible();
+  }
+
+  /** Checks the error under the form after the server rejects the registration. A partial text match is enough. */
+  async expectRegisterError(message: string): Promise<void> {
+    await expect(this.registerError).toContainText(message);
+  }
+
+  /** Checks the "required" messages under first name and password. The form shows these before anything is sent. */
+  async expectFieldErrors(firstNameMessage: string, passwordMessage: string): Promise<void> {
+    await expect(this.firstNameError).toContainText(firstNameMessage);
+    await expect(this.passwordError).toContainText(passwordMessage);
   }
 }
