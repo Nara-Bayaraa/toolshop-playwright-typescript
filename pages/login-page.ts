@@ -45,7 +45,7 @@ export class LoginPage {
 
   /** Checks we are still on the login page and the Login button is visible. Use it after a failed login. */
   async expectOnLoginPage(): Promise<void> {
-    await expect(this.page).toHaveURL(/auth\/login/)
+    await expect(this.page).toHaveURL(/auth\/login/);
     await expect(this.loginButton).toBeVisible();
   }
 
@@ -57,6 +57,6 @@ export class LoginPage {
   /** Checks the "required" messages under both fields. The form shows these before anything is sent. */
   async expectFieldErrors(emailMessage: string, passwordMessage: string): Promise<void> {
     await expect(this.emailError).toContainText(emailMessage);
-    await expect(this.passwordError).toContainText(passwordMessage)
+    await expect(this.passwordError).toContainText(passwordMessage);
   }
 }
