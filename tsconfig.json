@@ -2,7 +2,15 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "lib": ["ES2020"],
-    "types": ["@playwright/test", "node"]
-  }
+    "lib": ["ES2020", "DOM"],
+    // DOM gives you HTMLElement, Node, SVGElement, the names Playwright's types need
+    "types": ["@playwright/test", "node"],
+    "strict": true,
+    // turns on null checks and the rest of the strict family
+    "noUnusedLocals": true,
+    // fails the build on a variable you declared and never used
+    "forceConsistentCasingInFileNames": true
+    // stops a file importing as ./LoginPage on Mac and breaking on Linux CI
+  },
+  "include": ["tests", "pages", "fixtures", "playwright", "playwright.config.ts"]
 }

@@ -7,7 +7,13 @@ import { USER_FILE, ADMIN_FILE } from './playwright/auth-paths';
 import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '.env') });
-// loads USER_EMAIL, ADMIN_EMAIL and the rest from .env
+// loads USER_EMAIL, ADMIN_EMAIL, BASE_URL and the rest from .env
+
+const BASE_URL = process.env.BASE_URL || 'https://practicesoftwaretesting.com';
+// BASE_URL = the .env value if it's set and not empty, otherwise the public site
+
+const API_URL = process.env.API_URL || 'https://api.practicesoftwaretesting.com';
+// API_URL = the .env value if it's set and not empty, otherwise the public API
 
 export default defineConfig({
   testDir: './tests',
@@ -43,13 +49,13 @@ export default defineConfig({
       // only runs files ending in .setup.ts
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: 'https://practicesoftwaretesting.com',
+        baseURL: BASE_URL,
       },
     },
     {
       name: 'api',
       testDir: './tests/api',
-      use: { baseURL: 'https://api.practicesoftwaretesting.com' },
+      use: { baseURL: API_URL },
       // no storageState, API tests get their own token
     },
     {
@@ -59,7 +65,7 @@ export default defineConfig({
       // setup runs first so the customer session exists
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: 'https://practicesoftwaretesting.com',
+        baseURL: BASE_URL,
         storageState: USER_FILE,
         // every test here starts logged in as customer
       },
@@ -71,7 +77,7 @@ export default defineConfig({
       // setup runs first so the admin session exists
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: 'https://practicesoftwaretesting.com',
+        baseURL: BASE_URL,
         storageState: ADMIN_FILE,
         // every test here starts logged in as admin
       },

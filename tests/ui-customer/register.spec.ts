@@ -1,47 +1,45 @@
-import { expect, test } from '@playwright/test';
-import { RegisterPage } from '../../pages/register-page';
+import { expect, test } from '../../fixtures/test-fixtures';
 import { makeUser } from '../../test-data/user';
 
-test.describe('Register', () => {
+test.describe('Register', { tag: '@regression' }, () => {
+  // these tests exercise the register form itself, so start with an empty session
   test.use({ storageState: { cookies: [], origins: [] } });
-  let registerPage: RegisterPage;
 
-  test.beforeEach(async ({ page }) => {
-    registerPage = new RegisterPage(page);
+  test.beforeEach(async ({ registerPage }) => {
     await registerPage.goto();
   });
 
   // positive test cases for register
-  test('customer can register a new account', async ({ page }) => {
+  test('customer can register a new account', { tag: '@smoke' }, async ({ page, registerPage }) => {
     const user = makeUser();
     // user = a fresh RegisterUser object, new faker name and unique email every run
-    await registerPage.register(user);
 
+    await registerPage.register(user);
     await expect(page).toHaveURL(/auth\/login/);
   });
 
   // negative test cases for register
-  test('duplicate email shows an error', async ({ page }) => {
+  test('duplicate email shows an error', async ({ registerPage }) => {
     const user = { ...makeUser(), email: process.env.USER_EMAIL! };
-    await registerPage.register(user);
+    // user = a fresh RegisterUser, but with the email of an account that already exists
 
-    await expect(registerPage.emailExistsError).toBeVisible();
-    await expect(page).toHaveURL(/auth\/register/);
+    await registerPage.register(user);
+    await registerPage.expectRegisterError('already exists');
+    await registerPage.expectOnRegisterPage();
   });
 
-  test('breached password shows an error', async ({ page }) => {
+  test('breached password shows an error', async ({ registerPage }) => {
     const user = { ...makeUser(), password: 'Password123!' };
-    await registerPage.register(user);
+    // user = a fresh RegisterUser, but with a password found in public data leaks
 
-    await expect(registerPage.passwordLeakError).toBeVisible();
-    await expect(page).toHaveURL(/auth\/register/);
+    await registerPage.register(user);
+    await registerPage.expectRegisterError('data leak');
+    await registerPage.expectOnRegisterPage();
   });
 
-  test('empty form shows all required errors', async ({ page }) => {
+  test('empty form shows the required errors', async ({ registerPage }) => {
     await registerPage.submit();
-
-    await expect(registerPage.firstNameRequiredError).toBeVisible();
-    await expect(registerPage.passwordRequiredError).toBeVisible();
-    await expect(page).toHaveURL(/auth\/register/);
+    await registerPage.expectFieldErrors('First name is required', 'Password is required');
+    await registerPage.expectOnRegisterPage();
   });
 });

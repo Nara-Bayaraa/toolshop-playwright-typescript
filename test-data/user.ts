@@ -2,7 +2,6 @@ import { faker } from '@faker-js/faker';
 import { RegisterUser } from '../pages/register-page';
 
 export function makeUser(): RegisterUser {
-  
   return {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
